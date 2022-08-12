@@ -34,7 +34,7 @@ async function main() {
       dist_path = core.getInput("dist_path")
     const context = github.context,
       pull_request = context.payload.pull_request
-    console.log(github.context.pull_request)
+    console.log(github.context.pull_request || github.context)
 
     console.log(`==== Bootstrapping repo`)
     await exec.exec(bootstrap)
