@@ -44,7 +44,7 @@ async function run() {
 
     // const arrayOutput = sizeCalOutput.split("\n");
     let body = "Bundled size for the package is listed below: \n\n```\n";
-    body += sizeCalOutput
+    body += sizeCalOutput.join("\n");
     body += "\n```\n";
     // arrayOutput.forEach(item => {
     //   const i = item.split(/(\s+)/);
@@ -58,7 +58,7 @@ async function run() {
     let result
     if (pull_request) {
       // on pull request commit push add comment to pull request
-      result = octokit.issues.createComment(
+      result = await octokit.issues.createComment(
         Object.assign(Object.assign({}, context.repo), {
           issue_number: pull_request.number,
           body,
@@ -66,7 +66,7 @@ async function run() {
       );
     } else {
       // on commit push add comment to commit
-      result = octokit.repos.createCommitComment(
+      result = await octokit.repos.createCommitComment(
         Object.assign(Object.assign({}, context.repo), {
           commit_sha: github.context.sha,
           body,
