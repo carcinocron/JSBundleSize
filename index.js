@@ -2,7 +2,7 @@ const core = require("@actions/core");
 const exec = require("@actions/exec");
 const github = require("@actions/github");
 
-async function run (cmd) {
+async function cmd (cmd) {
   const outputOptions = {};
   let output = "";
 
@@ -18,7 +18,7 @@ async function run (cmd) {
   return output
 }
 
-async function run() {
+async function main() {
   try {
     // --------------- octokit initialization  ---------------
     const token = core.getInput("token");
@@ -39,7 +39,7 @@ async function run() {
     console.log(`==== Building Changes`);
     await exec.exec(build_command);
     core.setOutput("Building repo completed @ ", new Date().toTimeString());
-    const size1 = await run(`du -abh ${dist_path}`)
+    const size1 = await cmd(`du -abh ${dist_path}`)
     core.setOutput("size", size1);
 
     await exec.exec('git checkout main');
@@ -48,11 +48,11 @@ async function run() {
     console.log(`==== Building Changes`);
     await exec.exec(build_command);
     core.setOutput("Building repo completed @ ", new Date().toTimeString());
-    const size2 = await run(`du -abh ${dist_path}`)
+    const size2 = await cmd(`du -abh ${dist_path}`)
     core.setOutput("size2", size2);
 
     // const arrayOutput = sizeCalOutput.split("\n");
-    let body = "Bundled size for the package is listed below: \n\n```\n" + size1 + "\n```\n\n```\n" + size2 + "\n```\n";
+    const body = "Bundled size for the package is listed below: \n\n```\n" + size1 + "\n```\n\n```\n" + size2 + "\n```\n";
     // arrayOutput.forEach(item => {
     //   const i = item.split(/(\s+)/);
     //   if (item) {
@@ -87,4 +87,4 @@ async function run() {
   }
 }
 
-run();
+main();
