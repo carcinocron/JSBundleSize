@@ -53,7 +53,7 @@ async function run() {
     arrayOutput.forEach(item => {
       const i = item.split(/(\s+)/);
       if (item) {
-        result += `**${i[2]}**: ${bytesToSize(parseInt(i[0]) * 1000)} \n`;
+        result += `**${i[2]}**: ${i[0]} \n`;
       }
     });
 
