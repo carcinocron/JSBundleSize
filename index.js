@@ -42,6 +42,16 @@ async function main() {
     const size1 = await cmd(`du -abh ${dist_path}`)
     core.setOutput("size", size1);
 
+    await exec.exec(`git remote set-branches --add origin main`)
+    await exec.exec(`git checkout main`)
+    console.log(`==== Bootstrapping repo`);
+    await exec.exec(bootstrap);
+    console.log(`==== Building Changes`);
+    await exec.exec(build_command);
+    core.setOutput("Building repo completed @ ", new Date().toTimeString());
+    const size2 = await cmd(`du -abh ${dist_path}`)
+    core.setOutput("size", size2);
+
     // const arrayOutput = sizeCalOutput.split("\n");
     const body = "Bundled size for the package is listed below: \n\n```\n" + size1 + "\n```\n\n```\n" + size2 + "\n```\n";
 
