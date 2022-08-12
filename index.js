@@ -41,8 +41,11 @@ async function main() {
     console.log(`==== Building Changes`)
     await exec.exec(build_command)
     core.setOutput("Building repo completed @ ", new Date().toTimeString())
-    const current_name = context.sha || 'current'
-    const size1 = await cmd(`/bin/bash -c "du -abh ${dist_path} | tee /tmp/${current_name}.txt"`)
+    let base_branch_name = context.sha || 'current'
+    if (pull_request && pull_request.base && pull_request.base.ref) {
+      base_branch_name = pull_request.base.ref
+    }
+    const size1 = await cmd(`/bin/bash -c "du -abh ${dist_path} | tee /tmp/new_size.txt"`)
     core.setOutput("size", size1)
 
     await exec.exec(`rm -rf ${dist_path}/*`)
@@ -54,9 +57,9 @@ async function main() {
     console.log(`==== Building Changes`)
     await exec.exec(build_command)
     core.setOutput("Building repo completed @ ", new Date().toTimeString())
-    const size2 = await cmd(`/bin/bash -c "du -abh ${dist_path} | tee /tmp/${main_branch}_branch_size.txt"`)
+    const size2 = await cmd(`/bin/bash -c "du -abh ${dist_path} | tee /tmp/old_size.txt"`)
     core.setOutput("size", size2)
-    const diff = await cmd(`/bin/bash -c "git diff -w /tmp/${main_branch}_branch_size.txt /tmp/${current_name}.txt || true"`)
+    const diff = await cmd(`/bin/bash -c "git diff -w tmp/old_size.txt /tmp/new_size.txt || true"`)
 
     // const arrayOutput = sizeCalOutput.split("\n")
     const body = "Bundled size for the package is listed below: \n\n```diff\n" + diff + "\n```\n"
