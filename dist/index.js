@@ -3279,7 +3279,8 @@ async function main() {
     console.log(`==== Building Changes`)
     await exec.exec(build_command)
     core.setOutput("Building repo completed @ ", new Date().toTimeString())
-    const size1 = await cmd(`/bin/bash -c "du -abh ${dist_path} | tee /tmp/size1.txt"`)
+    const current_name = context.sha || 'current'
+    const size1 = await cmd(`/bin/bash -c "du -abh ${dist_path} | tee /tmp/${current_name}.txt"`)
     core.setOutput("size", size1)
 
     await exec.exec(`rm -rf ${dist_path}/*`)
@@ -3293,7 +3294,7 @@ async function main() {
     core.setOutput("Building repo completed @ ", new Date().toTimeString())
     const size2 = await cmd(`/bin/bash -c "du -abh ${dist_path} | tee /tmp/${main_branch}_branch_size.txt"`)
     core.setOutput("size", size2)
-    const diff = await cmd(`/bin/bash -c "git diff -w /tmp/${main_branch}_branch_size.txt /tmp/size1.txt || true"`)
+    const diff = await cmd(`/bin/bash -c "git diff -w /tmp/${main_branch}_branch_size.txt /tmp/${current_name}.txt || true"`)
 
     // const arrayOutput = sizeCalOutput.split("\n")
     const body = "Bundled size for the package is listed below: \n\n```diff\n" + diff + "\n```\n"
