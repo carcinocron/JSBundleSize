@@ -2,6 +2,22 @@ const core = require("@actions/core");
 const exec = require("@actions/exec");
 const github = require("@actions/github");
 
+async function run (cmd) {
+  const outputOptions = {};
+  let output = "";
+
+  outputOptions.listeners = {
+    stdout: data => {
+      output += data.toString();
+    },
+    stderr: data => {
+      output += data.toString();
+    }
+  };
+  await exec.exec(cmd, null, outputOptions);
+  return output
+}
+
 async function run() {
   try {
     // --------------- octokit initialization  ---------------
@@ -13,45 +29,36 @@ async function run() {
     // --------------- Build repo  ---------------
     const bootstrap = core.getInput("bootstrap"),
       build_command = core.getInput("build_command"),
+      main_branch = core.getInput("main_branch") || 'main',
       dist_path = core.getInput("dist_path");
-
-    console.log(`==== Bootstrapping repo`);
-    await exec.exec(bootstrap);
-
-    console.log(`==== Building Changes`);
-    await exec.exec(build_command);
-
-    core.setOutput("Building repo completed @ ", new Date().toTimeString());
-
-    // --------------- End Build repo  ---------------
-
-    // --------------- Comment repo size  ---------------
-    const outputOptions = {};
-    let sizeCalOutput = "";
-
-    outputOptions.listeners = {
-      stdout: data => {
-        sizeCalOutput += data.toString();
-      },
-      stderr: data => {
-        sizeCalOutput += data.toString();
-      }
-    };
-    await exec.exec(`du -abh ${dist_path}`, null, outputOptions);
-    core.setOutput("size", sizeCalOutput);
     const context = github.context,
       pull_request = context.payload.pull_request;
 
-    console.log({ sizeCalOutput })
+    console.log(`==== Bootstrapping repo`);
+    await exec.exec(bootstrap);
+    console.log(`==== Building Changes`);
+    await exec.exec(build_command);
+    core.setOutput("Building repo completed @ ", new Date().toTimeString());
+    const size1 = await run(`du -abh ${dist_path}`)
+    core.setOutput("size", size1);
+
+    await exec.exec('git checkout main');
+    console.log(`==== Bootstrapping repo`);
+    await exec.exec(bootstrap);
+    console.log(`==== Building Changes`);
+    await exec.exec(build_command);
+    core.setOutput("Building repo completed @ ", new Date().toTimeString());
+    const size2 = await run(`du -abh ${dist_path}`)
+    core.setOutput("size2", size2);
+
     // const arrayOutput = sizeCalOutput.split("\n");
-    let body = "Bundled size for the package is listed below: \n\n```\n" + sizeCalOutput + "\n```\n";
+    let body = "Bundled size for the package is listed below: \n\n```\n" + size1 + "\n```\n\n```\n" + size2 + "\n```\n";
     // arrayOutput.forEach(item => {
     //   const i = item.split(/(\s+)/);
     //   if (item) {
     //     body += `**${i[2]}**: ${i[0]} \n`;
     //   }
     // });
-    console.log({ body })
 
     let result
     if (pull_request) {
