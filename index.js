@@ -34,6 +34,7 @@ async function main() {
       dist_path = core.getInput("dist_path")
     const context = github.context,
       pull_request = context.payload.pull_request
+    console.log(github.context)
 
     console.log(`==== Bootstrapping repo`)
     await exec.exec(bootstrap)
@@ -52,9 +53,9 @@ async function main() {
     console.log(`==== Building Changes`)
     await exec.exec(build_command)
     core.setOutput("Building repo completed @ ", new Date().toTimeString())
-    const size2 = await cmd(`/bin/bash -c "du -abh ${dist_path} | tee /tmp/size2.txt"`)
+    const size2 = await cmd(`/bin/bash -c "du -abh ${dist_path} | tee /tmp/${main_branch}_branch_size.txt"`)
     core.setOutput("size", size2)
-    const diff = await cmd(`/bin/bash -c "git diff -w /tmp/size2.txt /tmp/size1.txt || true"`)
+    const diff = await cmd(`/bin/bash -c "git diff -w /tmp/${main_branch}_branch_size.txt /tmp/size1.txt || true"`)
 
     // const arrayOutput = sizeCalOutput.split("\n")
     const body = "Bundled size for the package is listed below: \n\n```diff\n" + diff + "\n```\n"
