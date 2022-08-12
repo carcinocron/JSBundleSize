@@ -42,23 +42,8 @@ async function main() {
     const size1 = await cmd(`du -abh ${dist_path}`)
     core.setOutput("size", size1);
 
-    await exec.exec('git checkout origin/main');
-    console.log(`==== Bootstrapping repo`);
-    await exec.exec(bootstrap);
-    console.log(`==== Building Changes`);
-    await exec.exec(build_command);
-    core.setOutput("Building repo completed @ ", new Date().toTimeString());
-    const size2 = await cmd(`du -abh ${dist_path}`)
-    core.setOutput("size2", size2);
-
     // const arrayOutput = sizeCalOutput.split("\n");
     const body = "Bundled size for the package is listed below: \n\n```\n" + size1 + "\n```\n\n```\n" + size2 + "\n```\n";
-    // arrayOutput.forEach(item => {
-    //   const i = item.split(/(\s+)/);
-    //   if (item) {
-    //     body += `**${i[2]}**: ${i[0]} \n`;
-    //   }
-    // });
 
     let result
     if (pull_request) {
@@ -78,7 +63,7 @@ async function main() {
         })
       );
     }
-    console.log({ result })
+    // console.log({ result })
 
     // --------------- End Comment repo size  ---------------
   } catch (error) {
