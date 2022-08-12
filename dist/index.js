@@ -3280,7 +3280,7 @@ async function main() {
     const size1 = await cmd(`du -abh ${dist_path}`)
     core.setOutput("size", size1);
 
-    await exec.exec('git checkout main');
+    await exec.exec('git checkout origin/main');
     console.log(`==== Bootstrapping repo`);
     await exec.exec(bootstrap);
     console.log(`==== Building Changes`);
