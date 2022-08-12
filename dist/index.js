@@ -3281,36 +3281,41 @@ async function run() {
       pull_request = context.payload.pull_request;
 
     // const arrayOutput = sizeCalOutput.split("\n");
-    let result = "Bundled size for the package is listed below: \n\n```\n";
-    result += sizeCalOutput
-    result += "\n```\n";
+    let body = "Bundled size for the package is listed below: \n\n```\n";
+    body += sizeCalOutput
+    body += "\n```\n";
     // arrayOutput.forEach(item => {
     //   const i = item.split(/(\s+)/);
     //   if (item) {
-    //     result += `**${i[2]}**: ${i[0]} \n`;
+    //     body += `**${i[2]}**: ${i[0]} \n`;
     //   }
     // });
+    console.log({ sizeCalOutput })
+    console.log({ body })
 
+    let result
     if (pull_request) {
       // on pull request commit push add comment to pull request
-      octokit.issues.createComment(
+      result = octokit.issues.createComment(
         Object.assign(Object.assign({}, context.repo), {
           issue_number: pull_request.number,
-          body: result
+          body,
         })
       );
     } else {
       // on commit push add comment to commit
-      octokit.repos.createCommitComment(
+      result = octokit.repos.createCommitComment(
         Object.assign(Object.assign({}, context.repo), {
           commit_sha: github.context.sha,
-          body: result
+          body,
         })
       );
     }
+    console.log({ result })
 
     // --------------- End Comment repo size  ---------------
   } catch (error) {
+    console.error(error)
     core.setFailed(error.message);
   }
 }
