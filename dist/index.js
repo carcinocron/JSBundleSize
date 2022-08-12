@@ -3280,7 +3280,8 @@ async function main() {
     const size1 = await cmd(`du -abh ${dist_path}`)
     core.setOutput("size", size1);
 
-    await exec.exec(`git remote set-branches --add origin main`)
+    await exec.exec(`git remote set-branches --add origin ${main_branch}`)
+    await exec.exec(`git fetch origin ${main_branch}:${main_branch}`)
     await exec.exec(`git checkout main`)
     console.log(`==== Bootstrapping repo`);
     await exec.exec(bootstrap);
