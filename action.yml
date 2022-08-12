@@ -1,5 +1,5 @@
-name: 'Compute JS Bundle size'
-description: 'Github action to compute total JS bundle size'
+name: 'Compare JS Bundle size on PR'
+description: 'Compare JS bundle size to main branch on Pull Requests'
 author: 'sarthak-saxena'
 inputs:
   bootstrap:
@@ -14,6 +14,10 @@ inputs:
     description: 'output path for the build package'
     required: true
     default: 'dist'
+  main_branch:
+    description: 'if not a PR, the branch to compare to'
+    required: true
+    default: 'main'
 runs:
   using: 'node16'
   main: 'dist/index.js'

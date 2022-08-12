@@ -1,11 +1,7 @@
 # JS bundle size
-Github action for computing javascript bundle size. It calculates  & logs JavaScript code bundled size on each pull request or commit (customizable).
-With the help of this action, developers can now log & check the overall code size after compression on per commit basis & take necessary actions.
-
-Upcoming features:
-Fail check if bundle size exceeds a specific value.
-
-Stay tuned for more updates!
+Github action for comparing javascript bundle size.
+See if your build size changed significantly as a github-actions comment
+on a pull request (or commit).
 
 ![How to use JSBundle Size action](https://i.imgur.com/koKtvty.gif)
 
@@ -13,46 +9,15 @@ Stay tuned for more updates!
 
 ## Usage:
 
-Checkout [action.yml](./action.yml)
+Checkout [example.yml](./example.yml)
 
-Please check the below code for detailed usage:
-```yaml
-steps:
-      - uses: actions/checkout@master
-      - uses: sarthak-saxena/JSBundleSize@master
-        with:
-          bootstrap: <Command for installing dependencies ex npm install>
-          build_command: <Command to build/bundle code>
-          dist_path: <Output path for your bundle>
-          token: ${{ secrets.GITHUB_TOKEN }}
+A user makes a pull request with an unknowingly bad change:
 
-```
+![Example of a code diff.](pr1.png)
 
-By default github actions work on `node 12`.For a specific node version use:
+Get a comment warning of a possible increase in your build size on the pull request:
 
-```yaml
-- uses: actions/setup-node@v1
-        with:
-          node-version: '10.0.0'
-```
-
-**Ex:**
-```yaml
-steps:
-      - uses: actions/checkout@master
-      - uses: actions/setup-node@v1
-        with:
-          node-version: '10.0.0'
-      - uses: sarthak-saxena/JSBundleSize@master
-        with:
-          bootstrap: npm install
-          build_command: npm run build
-          dist_path: 'dist'
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-```
-
-Also check [Demo.yml](./Demo.yml) for complete configuration(on using github actions)
+![Example of a comment on a pull request](pr2.png)
 
 ## License
 The scripts and documentation in this project are released under the [MIT License](./LICENSE)
