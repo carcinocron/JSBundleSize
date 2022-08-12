@@ -1,7 +1,7 @@
 const core = require("@actions/core")
 const exec = require("@actions/exec")
 const github = require("@actions/github")
-const gitDiff = require('git-diff')
+// const gitDiff = require('git-diff')
 
 async function cmd (cmd) {
   const outputOptions = {}
@@ -40,7 +40,7 @@ async function main() {
     console.log(`==== Building Changes`)
     await exec.exec(build_command)
     core.setOutput("Building repo completed @ ", new Date().toTimeString())
-    const size1 = await cmd(`du -abh ${dist_path}`)
+    const size1 = await cmd(`du -abh ${dist_path} | tee /tmp/size1.txt`)
     core.setOutput("size", size1)
 
     await exec.exec(`rm -rf ${dist_path}/*`)
@@ -52,11 +52,12 @@ async function main() {
     console.log(`==== Building Changes`)
     await exec.exec(build_command)
     core.setOutput("Building repo completed @ ", new Date().toTimeString())
-    const size2 = await cmd(`du -abh ${dist_path}`)
+    const size2 = await cmd(`du -abh ${dist_path} | tee /tmp/size2.txt`)
     core.setOutput("size", size2)
+    const diff = await cmd(`git diff -w /tmp/size2.txt /tmp/size1.txt`)
 
     // const arrayOutput = sizeCalOutput.split("\n")
-    const body = "Bundled size for the package is listed below: \n\n```diff\n" + gitDiff(size2, size1) + "\n```\n"
+    const body = "Bundled size for the package is listed below: \n\n```diff\n" + diff + "\n```\n"
 
     let result
     if (pull_request) {
