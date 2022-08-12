@@ -40,7 +40,7 @@ async function main() {
     console.log(`==== Building Changes`)
     await exec.exec(build_command)
     core.setOutput("Building repo completed @ ", new Date().toTimeString())
-    const size1 = await cmd(`du -abh ${dist_path} | tee /tmp/size1.txt`)
+    const size1 = await cmd(`/bin/bash -c "du -abh ${dist_path} | tee /tmp/size1.txt"`)
     core.setOutput("size", size1)
 
     await exec.exec(`rm -rf ${dist_path}/*`)
@@ -52,7 +52,7 @@ async function main() {
     console.log(`==== Building Changes`)
     await exec.exec(build_command)
     core.setOutput("Building repo completed @ ", new Date().toTimeString())
-    const size2 = await cmd(`du -abh ${dist_path} | tee /tmp/size2.txt`)
+    const size2 = await cmd(`/bin/bash -c "du -abh ${dist_path} | tee /tmp/size2.txt"`)
     core.setOutput("size", size2)
     const diff = await cmd(`git diff -w /tmp/size2.txt /tmp/size1.txt`)
 
