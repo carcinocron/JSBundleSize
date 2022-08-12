@@ -42,17 +42,15 @@ async function run() {
     const context = github.context,
       pull_request = context.payload.pull_request;
 
+    console.log({ sizeCalOutput })
     // const arrayOutput = sizeCalOutput.split("\n");
-    let body = "Bundled size for the package is listed below: \n\n```\n";
-    body += sizeCalOutput.join("\n");
-    body += "\n```\n";
+    let body = "Bundled size for the package is listed below: \n\n```\n" + sizeCalOutput + "\n```\n";
     // arrayOutput.forEach(item => {
     //   const i = item.split(/(\s+)/);
     //   if (item) {
     //     body += `**${i[2]}**: ${i[0]} \n`;
     //   }
     // });
-    console.log({ sizeCalOutput })
     console.log({ body })
 
     let result
