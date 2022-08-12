@@ -30,6 +30,7 @@
   },
   "devDependencies": {
     "@zeit/ncc": "^0.20.5",
-    "eslint": "^6.3.0"
+    "eslint": "^6.3.0",
+    "git-diff": "^2.0.6"
   }
 }
