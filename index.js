@@ -54,7 +54,7 @@ async function main() {
     core.setOutput("Building repo completed @ ", new Date().toTimeString())
     const size2 = await cmd(`/bin/bash -c "du -abh ${dist_path} | tee /tmp/size2.txt"`)
     core.setOutput("size", size2)
-    const diff = await cmd(`git diff -w /tmp/size2.txt /tmp/size1.txt || true`)
+    const diff = await cmd(`/bin/bash -c "git diff -w /tmp/size2.txt /tmp/size1.txt || true"`)
 
     // const arrayOutput = sizeCalOutput.split("\n")
     const body = "Bundled size for the package is listed below: \n\n```diff\n" + diff + "\n```\n"
