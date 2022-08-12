@@ -43,7 +43,7 @@ async function run() {
         sizeCalOutput += data.toString();
       }
     };
-    await exec.exec(`du ${dist_path}`, null, outputOptions);
+    await exec.exec(`du -abh ${dist_path}`, null, outputOptions);
     core.setOutput("size", sizeCalOutput);
     const context = github.context,
       pull_request = context.payload.pull_request;
