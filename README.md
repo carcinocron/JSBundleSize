@@ -1,7 +1,7 @@
 # JS bundle size
 Github action for comparing javascript bundle size.
 See if your build size changed significantly as a github-actions comment
-on a pull request (or commit).
+on a pull request.
 
 ![How to use JSBundle Size action](https://i.imgur.com/koKtvty.gif)
 
